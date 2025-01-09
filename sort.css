@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+.controls {
+    margin: 20px 0;
+}
+
+.array-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    margin: 20px auto;
+    max-width: 90%;
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.time-taken-container {
+    display: flex;
+    
+    height: 300px;
+    margin: 20px auto;
+    max-width: 85%;
+    background: #fff;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    border-radius: 10px;
+}
+
+#timeTakenContainer {
+    padding: 50px;
+}
+
+
+.box {
+    width: 100px; 
+    height: auto; 
+    background-color: #4caf50;
+    display: inline-block;
+    border-radius: 15px;
+    margin: 0 2px;
+    text-align: center; 
+    line-height: 100px; 
+    color: white; 
+    font-weight: bold; 
+    overflow: hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+}
+
+
+
+button, select {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+select {
+    background-color: #f4f4f9;
+    border: 1px solid #ccc;
+}
