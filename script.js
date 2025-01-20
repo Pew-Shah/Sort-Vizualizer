@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeTakenElement = document.getElementById('timeTaken');
 
     let array = [];
-
-    // Render the array as square boxes with numbers
     function renderArray() {
         arrayContainer.innerHTML = '';
         array.forEach(value => {
@@ -36,7 +34,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Swap two boxes
+    // perform Selection Sort
+    async function selectionSort() {
+        const boxes = document.querySelectorAll('.box');
+        for (let i = 0; i < boxes.length - 1; i++) {
+            let min = i;
+            boxes[min].style.backgroundColor = 'red';
+
+            for (let j = i + 1; j < boxes.length; j++) {
+                boxes[j].style.backgroundColor = 'red';
+
+                if (parseInt(boxes[j].textContent) < parseInt(boxes[min].textContent)) {
+                    
+                    boxes[min].style.backgroundColor = ''; 
+                    min = j;
+                    boxes[min].style.backgroundColor = 'blue';
+                }
+
+                await delay(300);
+                boxes[j].style.backgroundColor = '';
+            }
+
+            if (min !== i) {
+                await swapBoxes(boxes[i], boxes[min]);
+            }
+            boxes[i].style.backgroundColor = '#4caf50';
+        }
+        boxes[boxes.length - 1].style.backgroundColor = '#4caf50';
+    }
+
+    // swap two boxes
     function swapBoxes(box1, box2) {
         return new Promise(resolve => {
             const tempText = box1.textContent;
@@ -46,7 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle input array from user
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     function handleInputArray() {
         const userInput = prompt('Enter the array elements separated by commas:');
         if (userInput) {
@@ -59,26 +89,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Start Sorting and track time
     async function startSorting() {
         const algorithm = algorithmSelect.value;
-        const startTime = performance.now(); // Track start time
+        const startTime = performance.now();
 
         if (algorithm === 'bubble') {
             await bubbleSort();
+        } else if (algorithm === 'selection') {
+            await selectionSort();
         } else {
             alert(`${algorithm} sort is not implemented yet!`);
         }
 
-        const endTime = performance.now(); // Track end time
-        const timeTaken = (endTime - startTime).toFixed(2); // Calculate time taken
-        timeTakenElement.textContent = `Time Taken: ${timeTaken} ms`; // Display time taken
+        const endTime = performance.now();
+        const timeTaken = (endTime - startTime).toFixed(2);
+        timeTakenElement.textContent = `Time Taken: ${timeTaken} ms`;
     }
 
-    // Event Listeners
     inputArrayBtn.addEventListener('click', handleInputArray);
     startSortingBtn.addEventListener('click', startSorting);
 
-    // Initialize
-    renderArray();
+    if (array.length > 0) {
+        renderArray();
+    }
 });
