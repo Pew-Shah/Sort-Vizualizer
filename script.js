@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeTakenElement = document.getElementById('timeTaken');
 
     let array = [];
+    
+    // Render the array
     function renderArray() {
         arrayContainer.innerHTML = '';
         array.forEach(value => {
@@ -34,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // perform Selection Sort
+    // Perform Selection Sort
     async function selectionSort() {
         const boxes = document.querySelectorAll('.box');
         for (let i = 0; i < boxes.length - 1; i++) {
@@ -45,10 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 boxes[j].style.backgroundColor = 'red';
 
                 if (parseInt(boxes[j].textContent) < parseInt(boxes[min].textContent)) {
-                    
                     boxes[min].style.backgroundColor = ''; 
                     min = j;
-                    boxes[min].style.backgroundColor = 'blue';
+                    boxes[min].style.backgroundColor = 'red';
                 }
 
                 await delay(300);
@@ -63,13 +64,47 @@ document.addEventListener('DOMContentLoaded', () => {
         boxes[boxes.length - 1].style.backgroundColor = '#4caf50';
     }
 
-    // swap two boxes
+    // Perform Quick Sort
+    async function quickSort(low, high) {
+        if (low < high) {
+            const pivotIndex = await partition(low, high);
+            await quickSort(low, pivotIndex - 1);
+            await quickSort(pivotIndex + 1, high);
+        }
+    }
+
+    async function partition(low, high) {
+        const boxes = document.querySelectorAll('.box');
+        const pivot = parseInt(boxes[high].textContent);
+        boxes[high].style.backgroundColor = 'blue'; 
+        let i = low - 1;
+
+        for (let j = low; j < high; j++) {
+            boxes[j].style.backgroundColor = 'red';
+
+            if (parseInt(boxes[j].textContent) < pivot) {
+                i++;
+                await swapBoxes(boxes[i], boxes[j]);
+            }
+
+            await delay(300);
+            boxes[j].style.backgroundColor = '';
+        }
+
+        await swapBoxes(boxes[i + 1], boxes[high]);
+        boxes[high].style.backgroundColor = '';
+        boxes[i + 1].style.backgroundColor = '#4caf50';
+
+        return i + 1;
+    }
+
+    // Swap two boxes
     function swapBoxes(box1, box2) {
         return new Promise(resolve => {
             const tempText = box1.textContent;
             box1.textContent = box2.textContent;
             box2.textContent = tempText;
-            setTimeout(() => resolve(), 300);
+            setTimeout(() => resolve(), 400);
         });
     }
 
@@ -97,6 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
             await bubbleSort();
         } else if (algorithm === 'selection') {
             await selectionSort();
+        } else if (algorithm === 'quick') {
+            await quickSort(0, array.length - 1);
         } else {
             alert(`${algorithm} sort is not implemented yet!`);
         }
