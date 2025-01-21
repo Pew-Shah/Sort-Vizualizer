@@ -4,9 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const startSortingBtn = document.getElementById('startSorting');
     const algorithmSelect = document.getElementById('algorithm');
     const timeTakenElement = document.getElementById('timeTaken');
+    const chartCanvas = document.getElementById('comparisonChart');
+    document.getElementById('compareAll').addEventListener('click', compareAllSortingAlgorithms);
+
 
     let array = [];
-    
+    let timeData = {};
+
     // Render the array
     function renderArray() {
         arrayContainer.innerHTML = '';
@@ -149,6 +153,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // comparision chart
+
+    let comparisonChart = new Chart(chartCanvas, {
+        type: 'bar',
+        data: {
+            labels: [], 
+            datasets: [
+                {
+                    label: 'Time Taken (ms)',
+                    data: [], 
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+
+    // compare all
+
+    async function compareAllSortingAlgorithms() {
+        if (array.length === 0) {
+            alert('Please input an array first!');
+            return;
+        }
+    
+        const algorithms = ['bubble', 'selection', 'quick', 'insertion'];
+        const originalArray = [...array]; 
+        const statusMessage = document.getElementById('statusMessage');
+    
+        for (const algorithm of algorithms) {
+            array = [...originalArray]; 
+            renderArray();
+    
+            // Update the status message
+            statusMessage.textContent = `Currently sorting with ${algorithm.charAt(0).toUpperCase() + algorithm.slice(1)} Sort...`;
+    
+            const startTime = performance.now();
+    
+            if (algorithm === 'bubble') {
+                await bubbleSort();
+            } else if (algorithm === 'selection') {
+                await selectionSort();
+            } else if (algorithm === 'quick') {
+                await quickSort(0, array.length - 1);
+            } else if (algorithm === 'insertion') {
+                await insertionSort();
+            }
+    
+            const endTime = performance.now();
+            const timeTaken = (endTime - startTime).toFixed(2);
+    
+            timeData[algorithm] = timeTaken; 
+        }
+    
+        statusMessage.textContent = 'Comparison complete.';
+        updateChart(); 
+        alert('Comparison complete.');
+    }
+    
+    
+
+
     async function startSorting() {
         const algorithm = algorithmSelect.value;
         const startTime = performance.now();
@@ -169,6 +243,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeTaken = (endTime - startTime).toFixed(2);
         timeTakenElement.textContent = `Time Taken: ${timeTaken} ms`;
 
+        timeData[algorithm] = timeTaken; 
+        updateChart();
+
+    }
+
+    function updateChart() {
+        comparisonChart.data.labels = Object.keys(timeData);
+        comparisonChart.data.datasets[0].data = Object.values(timeData);
+        comparisonChart.update();
     }
 
     inputArrayBtn.addEventListener('click', handleInputArray);

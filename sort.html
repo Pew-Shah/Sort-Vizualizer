@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorting Visualizer</title>
@@ -16,10 +17,16 @@
             <option value="insertion">Insertion Sort</option>  
         </select>
         <button id="startSorting">Start Sorting</button>
+        <button id="compareAll">Compare All</button>
     </div>
     <div id="arrayContainer" class="array-container"></div>
     <div id="timeTakenContainer" class="time-taken-container">
         <span id="timeTaken">Time Taken: 0 ms</span>
+        <div id="statusMessage"></div>
+        <div id="chartContainer">
+            <canvas id="comparisonChart"></canvas>
+        </div>
+        
     </div>
     <script src="script.js"></script>
 </body>
