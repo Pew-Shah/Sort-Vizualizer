@@ -98,6 +98,31 @@ document.addEventListener('DOMContentLoaded', () => {
         return i + 1;
     }
 
+    // perform Insertion Sort
+
+    async function insertionSort() {
+        const boxes = document.querySelectorAll('.box');
+    
+        for (let i = 1; i < boxes.length; i++) {
+            const curBox = boxes[i];
+            const curValue = parseInt(curBox.textContent);
+            let j = i - 1;
+            curBox.style.backgroundColor = 'red';
+    
+            while (j >= 0 && parseInt(boxes[j].textContent) > curValue) {
+                boxes[j].style.backgroundColor = 'red';  
+                boxes[j + 1].style.backgroundColor = ''; 
+            
+                await swapBoxes(boxes[j + 1], boxes[j]);
+
+                boxes[j].style.backgroundColor = '#4caf50';
+                j--;
+            }
+            boxes[j + 1].style.backgroundColor = '#4caf50'; 
+        }
+    }
+
+
     // Swap two boxes
     function swapBoxes(box1, box2) {
         return new Promise(resolve => {
@@ -134,6 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
             await selectionSort();
         } else if (algorithm === 'quick') {
             await quickSort(0, array.length - 1);
+        } else if (algorithm === 'insertion') {
+            await insertionSort();
         } else {
             alert(`${algorithm} sort is not implemented yet!`);
         }
@@ -141,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const endTime = performance.now();
         const timeTaken = (endTime - startTime).toFixed(2);
         timeTakenElement.textContent = `Time Taken: ${timeTaken} ms`;
+
     }
 
     inputArrayBtn.addEventListener('click', handleInputArray);
