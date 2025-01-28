@@ -41,32 +41,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Perform Selection Sort
+
     async function selectionSort() {
-        const boxes = document.querySelectorAll('.box');
+        const boxes = document.querySelectorAll('.box'); 
+
         for (let i = 0; i < boxes.length - 1; i++) {
             let min = i;
-            boxes[min].style.backgroundColor = 'red';
+            boxes[i].style.backgroundColor = 'blue'; 
 
             for (let j = i + 1; j < boxes.length; j++) {
+                boxes[i].style.backgroundColor = 'blue';
                 boxes[j].style.backgroundColor = 'red';
+                await delay(500); 
 
                 if (parseInt(boxes[j].textContent) < parseInt(boxes[min].textContent)) {
-                    boxes[min].style.backgroundColor = ''; 
-                    min = j;
-                    boxes[min].style.backgroundColor = 'red';
+                
+                    boxes[min].style.backgroundColor = '';
+                    minIndex = j;
+                    boxes[min].style.backgroundColor = 'blue';
                 }
-
-                await delay(300);
                 boxes[j].style.backgroundColor = '';
             }
 
-            if (min !== i) {
+       
+            if (minIndex !== i) {
                 await swapBoxes(boxes[i], boxes[min]);
             }
-            boxes[i].style.backgroundColor = '#4caf50';
+            boxes[i].style.backgroundColor = '#4caf50'; 
         }
-        boxes[boxes.length - 1].style.backgroundColor = '#4caf50';
+        boxes[boxes.length - 1].style.backgroundColor = '#4caf50'; 
     }
+
 
     // Perform Quick Sort
     async function quickSort(low, high) {
