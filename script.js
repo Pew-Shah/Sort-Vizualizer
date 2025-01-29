@@ -52,19 +52,19 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let j = i + 1; j < boxes.length; j++) {
                 boxes[i].style.backgroundColor = 'blue';
                 boxes[j].style.backgroundColor = 'red';
-                await delay(500); 
+                await delay(600); 
 
                 if (parseInt(boxes[j].textContent) < parseInt(boxes[min].textContent)) {
                 
                     boxes[min].style.backgroundColor = '';
-                    minIndex = j;
+                    min = j;
                     boxes[min].style.backgroundColor = 'blue';
                 }
                 boxes[j].style.backgroundColor = '';
             }
 
        
-            if (minIndex !== i) {
+            if (min !== i) {
                 await swapBoxes(boxes[i], boxes[min]);
             }
             boxes[i].style.backgroundColor = '#4caf50'; 
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await swapBoxes(boxes[i], boxes[j]);
             }
 
-            await delay(300);
+            await delay(600);
             boxes[j].style.backgroundColor = '';
         }
 
@@ -132,15 +132,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // perform Heap Sort
+
+    async function heapSort() {
+        const boxes = document.querySelectorAll('.box');
+        const n = boxes.length;
+    
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+            await heapify(boxes, n, i);
+        }
+    
+        for (let i = n - 1; i > 0; i--) {
+            await swapBoxes(boxes[0], boxes[i]); 
+            boxes[i].style.backgroundColor = '#4caf50'; 
+            await delay(600);
+            await heapify(boxes, i, 0);
+        }
+        boxes[0].style.backgroundColor = '#4caf50'; 
+    }
+    
+    // Heapify function
+    async function heapify(boxes, n, i) {
+        let largest = i; 
+        let left = 2 * i + 1;
+        let right = 2 * i + 2;
+    
+        if (left < n && parseInt(boxes[left].textContent) > parseInt(boxes[largest].textContent)) {
+            largest = left;
+        }
+    
+        if (right < n && parseInt(boxes[right].textContent) > parseInt(boxes[largest].textContent)) {
+            largest = right;
+        }
+    
+        if (largest !== i) {
+            await swapBoxes(boxes[i], boxes[largest]); 
+            await heapify(boxes, n, largest);
+        }
+    }
+    
+
     // Swap two boxes
     function swapBoxes(box1, box2) {
         return new Promise(resolve => {
             const tempText = box1.textContent;
             box1.textContent = box2.textContent;
             box2.textContent = tempText;
-            setTimeout(() => resolve(), 400);
+
+            const box1Position = box1.getBoundingClientRect();
+            const box2Position = box2.getBoundingClientRect();
+
+            box1.style.transition = 'transform 1s ease';
+            box2.style.transition = 'transform 1s ease';
+
+            const deltaX = box2Position.left - box1Position.left;
+            const deltaY = box2Position.top - box1Position.top;
+    
+            box1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            box2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
+    
+      
+            setTimeout(() => {
+                box1.style.transition = '';
+                box2.style.transition = '';
+                box1.style.transform = '';
+                box2.style.transform = '';
+                resolve();
+            }, 1000); 
         });
     }
+    
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -191,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
     
-        const algorithms = ['bubble', 'selection', 'quick', 'insertion'];
+        const algorithms = ['bubble', 'selection', 'quick', 'insertion', 'heap'];
         const originalArray = [...array]; 
         const statusMessage = document.getElementById('statusMessage');
     
@@ -212,8 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 await quickSort(0, array.length - 1);
             } else if (algorithm === 'insertion') {
                 await insertionSort();
+            } else if (algorithm === 'heap') {  
+                await heapSort();
             }
-    
+
             const endTime = performance.now();
             const timeTaken = (endTime - startTime).toFixed(2);
     
