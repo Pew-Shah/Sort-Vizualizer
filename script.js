@@ -143,15 +143,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         for (let i = n - 1; i > 0; i--) {
-            await swapBoxes(boxes[0], boxes[i]); 
-            boxes[i].style.backgroundColor = '#4caf50'; 
-            await delay(600);
+            await swapBoxes(boxes[0], boxes[i]);  
+            boxes[i].style.backgroundColor = '#4caf50';  
+            await delay(1000); // Additional delay to slow down swaps
             await heapify(boxes, i, 0);
         }
-        boxes[0].style.backgroundColor = '#4caf50'; 
+        boxes[0].style.backgroundColor = '#4caf50';
     }
     
-    // Heapify function
+    // Heapify function with a delay
     async function heapify(boxes, n, i) {
         let largest = i; 
         let left = 2 * i + 1;
@@ -167,7 +167,67 @@ document.addEventListener('DOMContentLoaded', () => {
     
         if (largest !== i) {
             await swapBoxes(boxes[i], boxes[largest]); 
+            await delay(1000); // Delay to make swaps slower
             await heapify(boxes, n, largest);
+        }
+    }
+    
+    
+
+    // merge Sort
+    async function mergeSort(left, right) {
+        if (left >= right) return;
+    
+        const mid = Math.floor((left + right) / 2);
+    
+        // Recursively sort the left and right halves
+        await mergeSort(left, mid);
+        await mergeSort(mid + 1, right);
+    
+        // Merge the sorted halves
+        await merge(left, mid, right);
+    }
+    
+    async function merge(left, mid, right) {
+        const tempArray = [];
+        let i = left, j = mid + 1;
+        const boxes = document.querySelectorAll('.box');
+    
+        while (i <= mid && j <= right) {
+            boxes[i].style.backgroundColor = 'red'; 
+            boxes[j].style.backgroundColor = 'red'; 
+            await delay(600);
+    
+            if (array[i] <= array[j]) {
+                tempArray.push(array[i]);
+                i++;
+            } else {
+                tempArray.push(array[j]);
+                j++;
+            }
+        }
+
+        while (i <= mid) {
+            tempArray.push(array[i]);
+            i++;
+        }
+
+        while (j <= right) {
+            tempArray.push(array[j]);
+            j++;
+        }
+
+        for (let k = left, t = 0; k <= right; k++, t++) {
+            
+            await swapBoxes(boxes[k], boxes[t + left]);
+            array[k] = tempArray[t]; 
+        }
+    
+        renderArray();
+        await delay(600); 
+    
+        for (let k = left; k <= right; k++) {
+            boxes[k].style.backgroundColor = '#4caf50';
         }
     }
     
@@ -175,9 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Swap two boxes
     function swapBoxes(box1, box2) {
         return new Promise(resolve => {
-            const tempText = box1.textContent;
-            box1.textContent = box2.textContent;
-            box2.textContent = tempText;
+            
 
             const box1Position = box1.getBoundingClientRect();
             const box2Position = box2.getBoundingClientRect();
@@ -197,6 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 box2.style.transition = '';
                 box1.style.transform = '';
                 box2.style.transform = '';
+
+                const tempText = box1.textContent;
+                box1.textContent = box2.textContent;
+                box2.textContent = tempText;
                 resolve();
             }, 1000); 
         });
@@ -252,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
     
-        const algorithms = ['bubble', 'selection', 'quick', 'insertion', 'heap'];
+        const algorithms = ['bubble', 'selection', 'quick', 'insertion', 'heap', 'merge'];
         const originalArray = [...array]; 
         const statusMessage = document.getElementById('statusMessage');
     
@@ -275,6 +337,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 await insertionSort();
             } else if (algorithm === 'heap') {  
                 await heapSort();
+            } else if (algorithm === 'merge') {  
+                await mergeSort(0, array.length - 1);
             }
 
             const endTime = performance.now();
@@ -303,7 +367,11 @@ document.addEventListener('DOMContentLoaded', () => {
             await quickSort(0, array.length - 1);
         } else if (algorithm === 'insertion') {
             await insertionSort();
-        } else {
+        } else if (algorithm === 'heap') {  
+            await heapSort();
+        } else if (algorithm === 'merge') {  
+            await mergeSort(0, array.length - 1);
+        }else {
             alert(`${algorithm} sort is not implemented yet!`);
         }
 
