@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const algorithmSelect = document.getElementById('algorithm');
     const timeTakenElement = document.getElementById('timeTaken');
     const chartCanvas = document.getElementById('comparisonChart');
+    const swapCountElement = document.getElementById('swapCount');
     document.getElementById('compareAll').addEventListener('click', compareAllSortingAlgorithms);
 
+    let swapCounter = 0;
 
     let array = [];
     let timeData = {};
@@ -236,6 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function swapBoxes(box1, box2) {
         return new Promise(resolve => {
             
+            swapCounter++; // Increment swap count
+            swapCountElement.textContent = `Swaps: ${swapCounter}`;
 
             const box1Position = box1.getBoundingClientRect();
             const box2Position = box2.getBoundingClientRect();
@@ -306,24 +310,92 @@ document.addEventListener('DOMContentLoaded', () => {
         },
     });
 
-    // compare all
+    // swap count chart
 
+    function drawBarChart(swapCounts) {
+        const barChartCanvas = document.getElementById('barChartCanvas');
+        const barChartData = {
+            labels: Object.keys(swapCounts),  // Sorting algorithm names
+            datasets: [{
+                label: 'Number of Swaps',
+                data: Object.values(swapCounts),  // Swap counts for each algorithm
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)', 
+                    'rgba(255, 99, 132, 0.5)', 
+                    'rgba(54, 162, 235, 0.5)', 
+                    'rgba(255, 159, 64, 0.5)', 
+                    'rgba(153, 102, 255, 0.5)', 
+                    'rgba(255, 205, 86, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)', 
+                    'rgba(255, 99, 132, 1)', 
+                    'rgba(54, 162, 235, 1)', 
+                    'rgba(255, 159, 64, 1)', 
+                    'rgba(153, 102, 255, 1)', 
+                    'rgba(255, 205, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+    
+        // Create or update the bar chart
+        new Chart(barChartCanvas, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Swaps'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `${tooltipItem.label}: ${tooltipItem.raw} swaps`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // compare all
+    
     async function compareAllSortingAlgorithms() {
         if (array.length === 0) {
             alert('Please input an array first!');
             return;
         }
     
+        swapCounter = 0; // Reset swap count before the entire comparison starts
+        swapCountElement.textContent = `Swaps: ${swapCounter}`; // Update UI
+    
         const algorithms = ['bubble', 'selection', 'quick', 'insertion', 'heap', 'merge'];
         const originalArray = [...array]; 
         const statusMessage = document.getElementById('statusMessage');
+    
+        // Object to store swap counts for each algorithm
+        let swapCounts = {};
     
         for (const algorithm of algorithms) {
             array = [...originalArray]; 
             renderArray();
     
-            // Update the status message
             statusMessage.textContent = `Currently sorting with ${algorithm.charAt(0).toUpperCase() + algorithm.slice(1)} Sort...`;
+    
+            swapCounter = 0; // Reset swap count for each algorithm
+            swapCountElement.textContent = `Swaps: ${swapCounter}`; // Update UI
     
             const startTime = performance.now();
     
@@ -340,22 +412,32 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (algorithm === 'merge') {  
                 await mergeSort(0, array.length - 1);
             }
-
+    
             const endTime = performance.now();
             const timeTaken = (endTime - startTime).toFixed(2);
+            timeData[algorithm] = timeTaken;
     
-            timeData[algorithm] = timeTaken; 
+            // Store swap count for this algorithm
+            swapCounts[algorithm] = swapCounter;
         }
     
         statusMessage.textContent = 'Comparison complete.';
-        updateChart(); 
+        updateChart();
+    
+        // Draw the bar chart with swap counts
+        drawBarChart(swapCounts);
+    
         alert('Comparison complete.');
     }
+    
     
     
 
 
     async function startSorting() {
+
+        swapCounter = 0; // Reset swap count
+        swapCountElement.textContent = `Swaps: ${swapCounter}`;
         const algorithm = algorithmSelect.value;
         const startTime = performance.now();
 
