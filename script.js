@@ -378,14 +378,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
     
-        swapCounter = 0; // Reset swap count before the entire comparison starts
-        swapCountElement.textContent = `Swaps: ${swapCounter}`; // Update UI
+        swapCounter = 0; 
+        swapCountElement.textContent = `Swaps: ${swapCounter}`; 
     
         const algorithms = ['bubble', 'selection', 'quick', 'insertion', 'heap', 'merge'];
         const originalArray = [...array]; 
         const statusMessage = document.getElementById('statusMessage');
     
-        // Object to store swap counts for each algorithm
+        
         let swapCounts = {};
     
         for (const algorithm of algorithms) {
@@ -394,8 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
             statusMessage.textContent = `Currently sorting with ${algorithm.charAt(0).toUpperCase() + algorithm.slice(1)} Sort...`;
     
-            swapCounter = 0; // Reset swap count for each algorithm
-            swapCountElement.textContent = `Swaps: ${swapCounter}`; // Update UI
+            swapCounter = 0; 
+            swapCountElement.textContent = `Swaps: ${swapCounter}`; 
     
             const startTime = performance.now();
     
@@ -417,14 +417,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const timeTaken = (endTime - startTime).toFixed(2);
             timeData[algorithm] = timeTaken;
     
-            // Store swap count for this algorithm
+            
             swapCounts[algorithm] = swapCounter;
         }
     
         statusMessage.textContent = 'Comparison complete.';
         updateChart();
-    
-        // Draw the bar chart with swap counts
         drawBarChart(swapCounts);
     
         alert('Comparison complete.');
@@ -436,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function startSorting() {
 
-        swapCounter = 0; // Reset swap count
+        swapCounter = 0; 
         swapCountElement.textContent = `Swaps: ${swapCounter}`;
         const algorithm = algorithmSelect.value;
         const startTime = performance.now();
