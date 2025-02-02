@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const arrayContainer = document.getElementById('arrayContainer');
     const inputArrayBtn = document.getElementById('inputArray');
+    const generateRandomBtn = document.getElementById('generateRandom');
     const startSortingBtn = document.getElementById('startSorting');
     const algorithmSelect = document.getElementById('algorithm');
     const timeTakenElement = document.getElementById('timeTaken');
@@ -22,6 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
             box.classList.add('box');
             arrayContainer.appendChild(box);
         });
+    }
+
+
+     // Generate Random Numbers
+     function generateRandomNumbers() {
+        array = [];
+        for (let i = 0; i < 5; i++) { 
+            array.push(Math.floor(Math.random() * 100) + 1);
+        }
+        renderArray();
+        console.log("Generated Random Numbers:", array);
     }
 
     // Perform Bubble Sort
@@ -147,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = n - 1; i > 0; i--) {
             await swapBoxes(boxes[0], boxes[i]);  
             boxes[i].style.backgroundColor = '#4caf50';  
-            await delay(1000); // Additional delay to slow down swaps
+            await delay(1000); 
             await heapify(boxes, i, 0);
         }
         boxes[0].style.backgroundColor = '#4caf50';
@@ -158,6 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let largest = i; 
         let left = 2 * i + 1;
         let right = 2 * i + 2;
+
+        boxes[i].style.backgroundColor = 'red'; 
+        if (left < n) boxes[left].style.backgroundColor = 'red'; 
+        if (right < n) boxes[right].style.backgroundColor = 'blue';
     
         if (left < n && parseInt(boxes[left].textContent) > parseInt(boxes[largest].textContent)) {
             largest = left;
@@ -169,9 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
         if (largest !== i) {
             await swapBoxes(boxes[i], boxes[largest]); 
-            await delay(1000); // Delay to make swaps slower
+            await delay(1000); 
             await heapify(boxes, n, largest);
         }
+
+        boxes[i].style.backgroundColor = 'blue'; 
+        if (left < n) boxes[left].style.backgroundColor = 'blue'; 
+        if (right < n) boxes[right].style.backgroundColor = 'blue';
     }
     
     
@@ -429,8 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     
-    
-
+    // sorting
 
     async function startSorting() {
 
@@ -471,6 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     inputArrayBtn.addEventListener('click', handleInputArray);
+    generateRandomBtn.addEventListener('click', generateRandomNumbers); 
     startSortingBtn.addEventListener('click', startSorting);
 
     if (array.length > 0) {
