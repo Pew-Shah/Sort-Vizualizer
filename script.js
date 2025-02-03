@@ -202,11 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
         const mid = Math.floor((left + right) / 2);
     
-        // Recursively sort the left and right halves
         await mergeSort(left, mid);
         await mergeSort(mid + 1, right);
-    
-        // Merge the sorted halves
         await merge(left, mid, right);
     }
     
@@ -258,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function swapBoxes(box1, box2) {
         return new Promise(resolve => {
             
-            swapCounter++; // Increment swap count
+            swapCounter++; 
             swapCountElement.textContent = `Swaps: ${swapCounter}`;
 
             const box1Position = box1.getBoundingClientRect();
@@ -335,10 +332,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawBarChart(swapCounts) {
         const barChartCanvas = document.getElementById('barChartCanvas');
         const barChartData = {
-            labels: Object.keys(swapCounts),  // Sorting algorithm names
+            labels: Object.keys(swapCounts),  
             datasets: [{
                 label: 'Number of Swaps',
-                data: Object.values(swapCounts),  // Swap counts for each algorithm
+                data: Object.values(swapCounts),  
                 backgroundColor: [
                     'rgba(75, 192, 192, 0.5)', 
                     'rgba(255, 99, 132, 0.5)', 
